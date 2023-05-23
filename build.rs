@@ -168,8 +168,14 @@ fn main() {
     {
         let bindings = bindgen::Builder::default()
             .header(header.to_str().unwrap())
+            .default_enum_style(
+                bindgen::EnumVariation::Rust {
+                    non_exhaustive: false,
+                }
+            )
             .allowlist_function("FT_.*")
             .allowlist_type("FT_.*")
+            .allowlist_type("_FT_.*")
             .allowlist_var("FT_.*")
             .formatter(bindgen::Formatter::Rustfmt)
             .derive_default(true)

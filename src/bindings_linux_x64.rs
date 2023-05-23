@@ -193,12 +193,52 @@ impl Default for _OVERLAPPED {
 }
 pub type LPOVERLAPPED = *mut _OVERLAPPED;
 pub type FT_HANDLE = PVOID;
+#[repr(u32)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum _FT_STATUS {
+    FT_OK = 0,
+    FT_INVALID_HANDLE = 1,
+    FT_DEVICE_NOT_FOUND = 2,
+    FT_DEVICE_NOT_OPENED = 3,
+    FT_IO_ERROR = 4,
+    FT_INSUFFICIENT_RESOURCES = 5,
+    FT_INVALID_PARAMETER = 6,
+    FT_INVALID_BAUD_RATE = 7,
+    FT_DEVICE_NOT_OPENED_FOR_ERASE = 8,
+    FT_DEVICE_NOT_OPENED_FOR_WRITE = 9,
+    FT_FAILED_TO_WRITE_DEVICE = 10,
+    FT_EEPROM_READ_FAILED = 11,
+    FT_EEPROM_WRITE_FAILED = 12,
+    FT_EEPROM_ERASE_FAILED = 13,
+    FT_EEPROM_NOT_PRESENT = 14,
+    FT_EEPROM_NOT_PROGRAMMED = 15,
+    FT_INVALID_ARGS = 16,
+    FT_NOT_SUPPORTED = 17,
+    FT_NO_MORE_ITEMS = 18,
+    FT_TIMEOUT = 19,
+    FT_OPERATION_ABORTED = 20,
+    FT_RESERVED_PIPE = 21,
+    FT_INVALID_CONTROL_REQUEST_DIRECTION = 22,
+    FT_INVALID_CONTROL_REQUEST_TYPE = 23,
+    FT_IO_PENDING = 24,
+    FT_IO_INCOMPLETE = 25,
+    FT_HANDLE_EOF = 26,
+    FT_BUSY = 27,
+    FT_NO_SYSTEM_RESOURCES = 28,
+    FT_DEVICE_LIST_NOT_READY = 29,
+    FT_DEVICE_NOT_CONNECTED = 30,
+    FT_INCORRECT_DEVICE_PATH = 31,
+    FT_OTHER_ERROR = 32,
+}
 pub type FT_STATUS = ULONG;
-pub const _FT_PIPE_TYPE_FTPipeTypeControl: _FT_PIPE_TYPE = 0;
-pub const _FT_PIPE_TYPE_FTPipeTypeIsochronous: _FT_PIPE_TYPE = 1;
-pub const _FT_PIPE_TYPE_FTPipeTypeBulk: _FT_PIPE_TYPE = 2;
-pub const _FT_PIPE_TYPE_FTPipeTypeInterrupt: _FT_PIPE_TYPE = 3;
-pub type _FT_PIPE_TYPE = ::std::os::raw::c_uint;
+#[repr(u32)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum _FT_PIPE_TYPE {
+    FTPipeTypeControl = 0,
+    FTPipeTypeIsochronous = 1,
+    FTPipeTypeBulk = 2,
+    FTPipeTypeInterrupt = 3,
+}
 pub use self::_FT_PIPE_TYPE as FT_PIPE_TYPE;
 #[repr(C)]
 #[derive(Debug, Default, Copy, Clone)]
@@ -863,13 +903,13 @@ fn bindgen_test_layout__FT_SETUP_PACKET() {
     );
 }
 pub type FT_SETUP_PACKET = _FT_SETUP_PACKET;
-pub const _E_FT_NOTIFICATION_CALLBACK_TYPE_E_FT_NOTIFICATION_CALLBACK_TYPE_DATA:
-    _E_FT_NOTIFICATION_CALLBACK_TYPE = 0;
-pub const _E_FT_NOTIFICATION_CALLBACK_TYPE_E_FT_NOTIFICATION_CALLBACK_TYPE_GPIO:
-    _E_FT_NOTIFICATION_CALLBACK_TYPE = 1;
-pub const _E_FT_NOTIFICATION_CALLBACK_TYPE_E_FT_NOTIFICATION_CALLBACK_TYPE_INTERRUPT:
-    _E_FT_NOTIFICATION_CALLBACK_TYPE = 2;
-pub type _E_FT_NOTIFICATION_CALLBACK_TYPE = ::std::os::raw::c_uint;
+#[repr(u32)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum _E_FT_NOTIFICATION_CALLBACK_TYPE {
+    E_FT_NOTIFICATION_CALLBACK_TYPE_DATA = 0,
+    E_FT_NOTIFICATION_CALLBACK_TYPE_GPIO = 1,
+    E_FT_NOTIFICATION_CALLBACK_TYPE_INTERRUPT = 2,
+}
 pub use self::_E_FT_NOTIFICATION_CALLBACK_TYPE as E_FT_NOTIFICATION_CALLBACK_TYPE;
 #[repr(C)]
 #[derive(Debug, Default, Copy, Clone)]
@@ -1163,17 +1203,23 @@ impl Default for FT_60XCONFIGURATION {
         }
     }
 }
-pub const _FT_DEVICE_FT_DEVICE_UNKNOWN: _FT_DEVICE = 3;
-pub const _FT_DEVICE_FT_DEVICE_600: _FT_DEVICE = 600;
-pub const _FT_DEVICE_FT_DEVICE_601: _FT_DEVICE = 601;
-pub const _FT_DEVICE_FT_DEVICE_602: _FT_DEVICE = 602;
-pub const _FT_DEVICE_FT_DEVICE_603: _FT_DEVICE = 603;
-pub type _FT_DEVICE = ::std::os::raw::c_uint;
+#[repr(u32)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum _FT_DEVICE {
+    FT_DEVICE_UNKNOWN = 3,
+    FT_DEVICE_600 = 600,
+    FT_DEVICE_601 = 601,
+    FT_DEVICE_602 = 602,
+    FT_DEVICE_603 = 603,
+}
 pub use self::_FT_DEVICE as FT_DEVICE;
-pub const _FT_FLAGS_FT_FLAGS_OPENED: _FT_FLAGS = 1;
-pub const _FT_FLAGS_FT_FLAGS_HISPEED: _FT_FLAGS = 2;
-pub const _FT_FLAGS_FT_FLAGS_SUPERSPEED: _FT_FLAGS = 4;
-pub type _FT_FLAGS = ::std::os::raw::c_uint;
+#[repr(u32)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum _FT_FLAGS {
+    FT_FLAGS_OPENED = 1,
+    FT_FLAGS_HISPEED = 2,
+    FT_FLAGS_SUPERSPEED = 4,
+}
 pub use self::_FT_FLAGS as FT_FLAGS;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -1282,15 +1328,23 @@ impl Default for _FT_DEVICE_LIST_INFO_NODE {
     }
 }
 pub type FT_DEVICE_LIST_INFO_NODE = _FT_DEVICE_LIST_INFO_NODE;
-pub const FT_GPIO_PULL_GPIO_PULL_50K_PD: FT_GPIO_PULL = 0;
-pub const FT_GPIO_PULL_GPIO_PULL_HIZ: FT_GPIO_PULL = 1;
-pub const FT_GPIO_PULL_GPIO_PULL_50K_PU: FT_GPIO_PULL = 2;
-pub const FT_GPIO_PULL_GPIO_PULL_DEFAULT: FT_GPIO_PULL = 0;
-pub type FT_GPIO_PULL = ::std::os::raw::c_uint;
-pub const FT_PIPE_DIRECTION_FT_PIPE_DIR_IN: FT_PIPE_DIRECTION = 0;
-pub const FT_PIPE_DIRECTION_FT_PIPE_DIR_OUT: FT_PIPE_DIRECTION = 1;
-pub const FT_PIPE_DIRECTION_FT_PIPE_DIR_COUNT: FT_PIPE_DIRECTION = 2;
-pub type FT_PIPE_DIRECTION = ::std::os::raw::c_uint;
+impl FT_GPIO_PULL {
+    pub const GPIO_PULL_DEFAULT: FT_GPIO_PULL = FT_GPIO_PULL::GPIO_PULL_50K_PD;
+}
+#[repr(u32)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum FT_GPIO_PULL {
+    GPIO_PULL_50K_PD = 0,
+    GPIO_PULL_HIZ = 1,
+    GPIO_PULL_50K_PU = 2,
+}
+#[repr(u32)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum FT_PIPE_DIRECTION {
+    FT_PIPE_DIR_IN = 0,
+    FT_PIPE_DIR_OUT = 1,
+    FT_PIPE_DIR_COUNT = 2,
+}
 #[repr(C)]
 #[derive(Debug, Default, Copy, Clone)]
 pub struct FT_PIPE_TRANSFER_CONF {
