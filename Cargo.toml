@@ -1,0 +1,32 @@
+[package]
+name = "libftd3xx-ffi"
+version = "0.1.0"
+edition = "2021"
+readme = "README.md"
+build = "build.rs"
+description = "Rust FFI bindings to the FTDI d3xx drivers."
+keywords = ["ftdi", "ffi", "usb"]
+categories = ["external-ffi-bindings"]
+authors = ["David Rebbe <drebbe@intrepidcs.com>"]
+documentation = "https://docs.rs/libftd3xx-ffi"
+license-file = "LICENSE"
+links = "ftd3xx"
+exclude = [
+    "vendor/**/*.dll",
+    "vendor/**/*.o",
+    "vendor/**/*.so.*",
+    "vendor/**/examples",
+    "vendor/linux/**/libusb",
+]
+
+[dependencies]
+cfg-if = "^1.0.0"
+
+[build-dependencies]
+bindgen = { version = "~0.65.1", optional = true }
+
+[dev-dependencies]
+version-sync = "~0.9.2"
+
+[features]
+static = []
