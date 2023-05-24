@@ -1,0 +1,177 @@
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - '*'
+  pull_request:
+  schedule:
+    - cron: "31 3 * * *"
+
+name: CI
+
+jobs:
+
+  linux_build:
+    name: Linux Build
+    runs-on: ubuntu-22.04
+    env:
+      RUSTFLAGS: "-D warnings"
+      RUSTDOCFLAGS: "-D warnings"
+    strategy:
+      matrix:
+        target:
+          - "x86_64-unknown-linux-musl"
+          - "x86_64-unknown-linux-gnu"
+          - "i686-unknown-linux-gnu"
+          - "i686-unknown-linux-musl"
+          - "arm-unknown-linux-musleabihf"
+          - "arm-unknown-linux-gnueabihf"
+          - "armv7-unknown-linux-musleabihf"
+          - "armv7-unknown-linux-gnueabihf"
+          - "aarch64-unknown-linux-musl"
+          - "aarch64-unknown-linux-gnu"
+    steps:
+      - name: Update sources
+        run: sudo apt update
+      - name: Install bindgen dependencies
+        run: sudo apt install llvm-dev libclang-dev clang
+      - name: Install libc6-dev-i386
+        run: sudo apt install libc6-dev-i386
+        if: ${{ contains(matrix.target, 'i686') }}
+      - name: Install libc6-dev-armhf-cross
+        run: sudo apt install libc6-dev-armhf-cross gcc-arm-linux-gnueabihf
+        if: ${{ contains(matrix.target, 'arm') }}
+      - name: Install libc6-dev-arm64-cross
+        run: sudo apt install libc6-dev-arm64-cross gcc-aarch64-linux-gnu
+        if: ${{ contains(matrix.target, 'aarch64') }}
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      - name: Build with musl
+        run: |
+          cargo build --features=static --target ${{ matrix.target }}
+          cargo build --features=static,bindgen --target ${{ matrix.target }}
+          cargo build --examples --features=static,bindgen --target ${{ matrix.target }}
+        if: ${{ contains(matrix.target, 'musl') }}
+      - name: Build with glibc
+        run: |
+          cargo build --target ${{ matrix.target }}
+          cargo build --features=bindgen  --target ${{ matrix.target }}
+          cargo build --features=static  --target ${{ matrix.target }}
+          cargo build --features=static,bindgen  --target ${{ matrix.target }}
+          cargo build --examples --features=static,bindgen  --target ${{ matrix.target }}
+        if: ${{ contains(matrix.target, 'gnu') }}
+      - run: cargo doc
+
+  macos_build:
+    name: Mac Build
+    runs-on: macos-12
+    env:
+      RUSTFLAGS: "-D warnings"
+      RUSTDOCFLAGS: "-D warnings"
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo build --target x86_64-apple-darwin
+      - run: cargo build --features=bindgen --target x86_64-apple-darwin
+      - run: cargo doc
+
+  windows_build:
+    name: Windows Build
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        target: ["x86_64-pc-windows-msvc", "i686-pc-windows-msvc"]
+    env:
+      RUSTFLAGS: "-D warnings"
+      RUSTDOCFLAGS: "-D warnings"
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      - run: |
+          cargo build --target ${{ matrix.target }}
+          cargo build --features=static  --target ${{ matrix.target }}
+          cargo build --examples --features=static  --target ${{ matrix.target }}
+      - run: cargo doc
+
+  linux_test:
+    name: Linux Unit Tests
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        target:
+          - "x86_64-unknown-linux-musl"
+          - "x86_64-unknown-linux-gnu"
+    steps:
+      - name: Update sources
+        run: sudo apt update
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      - run: cargo test --features=static --target ${{ matrix.target }}
+
+  macos_test:
+    name: Mac Unit Tests
+    runs-on: macos-12
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo test --target x86_64-apple-darwin
+
+  windows_test:
+    name: Windows Unit Tests
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        target: ["x86_64-pc-windows-msvc"]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      - run: cargo test --target ${{ matrix.target }}
+
+  clippy_check:
+    name: Clippy
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+      - run: cargo clippy --all-features -- --deny warnings
+
+  format_check:
+    name: Rust Format
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@nightly
+        with:
+          components: rustfmt
+      - run: cargo +nightly fmt -- --check
+
+  release:
+    name: crates.io release
+    if: startsWith(github.ref, 'refs/tags/')
+    needs:
+      - clippy_check
+      - format_check
+      - linux_build
+      - linux_test
+      - macos_build
+      - macos_test
+      - windows_build
+      - windows_test
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo publish --token ${CRATES_IO_TOKEN}
+        env:
+          CRATES_IO_TOKEN: ${{ secrets.CRATES_IO_TOKEN }}
