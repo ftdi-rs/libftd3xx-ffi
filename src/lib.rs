@@ -6,6 +6,8 @@
 #![allow(clippy::upper_case_acronyms)]
 #![allow(clippy::useless_transmute)]
 
+pub mod prelude;
+
 cfg_if::cfg_if! {
     if #[cfg(feature = "bindgen")] {
         include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
@@ -29,3 +31,4 @@ cfg_if::cfg_if! {
         std::compile_error!("pre-generated bindings are not avaliable for your target");
     }
 }
+

@@ -1,9 +1,14 @@
 #[cfg(test)]
 mod tests {
-    use libftd3xx_ffi::{FT_GetLibraryVersion, FT_STATUS, DWORD, _FT_STATUS::*};
+    use std::ffi::c_uint;
+    use std::ffi::c_void;
+
+    use libftd3xx_ffi::prelude::*;
+    use libftd3xx_ffi::DWORD;
+    use libftd3xx_ffi::FT_LIST_NUMBER_ONLY;
 
     #[test]
-    fn test_version() {
+    fn test_ft_getlibraryversion() {
         let mut version: DWORD = 0;
         let status: FT_STATUS = unsafe { FT_GetLibraryVersion(&mut version) };
         assert_eq!(status, FT_OK as FT_STATUS);
@@ -18,9 +23,9 @@ mod tests {
                 let expected_version = 0x01_00_05;
             } else if #[cfg(all(target_os = "windows", target_arch = "x86_64"))] {
                 // version "1.3.0.4" is represented as 0x1030004
-                let expected_version = 0x1_03_00_04; 
+                let expected_version = 0x1_03_00_04;
             } else if #[cfg(all(target_os = "windows", target_arch = "x86"))] {
-                let expected_version = 0x1_03_00_04; 
+                let expected_version = 0x1_03_00_04;
             } else if #[cfg(all(target_os = "linux", target_arch = "arm"))] {
                 todo!()
                 let expected_version = 0x0;
@@ -38,11 +43,40 @@ mod tests {
             }
         };
         assert_eq!(version, expected_version);
+    }
 
-        /*
-        extern "C" {
-            pub fn FT_GetDriverVersion(ftHandle: FT_HANDLE, lpdwVersion: LPDWORD) -> FT_STATUS;
+    #[test]
+    fn test_ft_getdriverversion() {
+        let mut version: DWORD = 0;
+        let status: FT_STATUS = unsafe { FT_GetDriverVersion(std::ptr::null_mut(), &mut version) };
+        assert_eq!(status, FT_INVALID_HANDLE as FT_STATUS);
+    }
+
+    
+    #[test]
+    fn test_ft_listdevices() {
+        let mut num_devs: DWORD = 0;
+        let status: FT_STATUS = unsafe {
+            FT_ListDevices(
+                &mut num_devs as *mut c_uint as *mut c_void,
+                std::ptr::null_mut(),
+                FT_LIST_NUMBER_ONLY,
+            )
+        };
+        assert_eq!(status, FT_OK as FT_STATUS);
+
+        cfg_if::cfg_if! {
+            if #[cfg(feature = "hardware_tests")] {
+                assert!(num_devs >= 1);
+            } else {
+                assert_eq!(num_devs, 0);
+            }
         }
-        */
+    }
+
+    #[cfg(feature = "hardware_tests")]
+    #[test]
+    fn test_ft_create() {
+        todo!()
     }
 }
