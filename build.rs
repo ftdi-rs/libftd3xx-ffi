@@ -10,18 +10,18 @@ fn search_path() -> PathBuf {
             path.push("windows");
             match env::var("CARGO_CFG_TARGET_ARCH").unwrap().as_str() {
                 "x86_64" => {
+                    path.push("x64");
                     #[cfg(feature = "static")]
                     {
                         path.push("Static");
                     }
-                    path.push("x64");
                 }
                 "x86" => {
+                    path.push("Win32");
                     #[cfg(feature = "static")]
                     {
                         path.push("Static");
                     }
-                    path.push("Win32");
                 }
                 target_arch => panic!("Target architecture not supported: {target_arch}"),
             }
@@ -45,7 +45,7 @@ fn search_path() -> PathBuf {
                 },
                 target_arch => panic!("Target architecture not supported: {target_arch}"),
             }
-            path.push("build");
+            //path.push("build");
         }
         "macos" => match env::var("CARGO_CFG_TARGET_ARCH").unwrap().as_str() {
             "x86_64" | "aarch64" => {
@@ -135,12 +135,11 @@ fn linker_options() {
 
 #[cfg(feature = "static")]
 fn linker_options() {
-    println!("cargo:rustc-link-lib=static=ftd3xx");
-
     match env::var("CARGO_CFG_TARGET_OS").unwrap().as_str() {
-        "windows" => {}
-        "linux" => {}
+        "windows" => { println!("cargo:rustc-link-lib=static=ftd3xx") }
+        "linux" => { println!("cargo:rustc-link-lib=static=ftd3xx-static") }
         "macos" => {
+            println!("cargo:rustc-link-lib=static=ftd3xx");
             println!("cargo:rustc-link-lib=framework=IOKit");
             println!("cargo:rustc-link-lib=framework=CoreFoundation");
         }
@@ -155,6 +154,8 @@ fn main() {
     let mut search: PathBuf = cwd;
     search.push(search_path());
 
+    // Debug output to be able to see search path
+    //println!("cargo:warning=search path: {}", search.display());
     println!(
         "cargo:rustc-link-search=native={}",
         search.to_str().unwrap()
