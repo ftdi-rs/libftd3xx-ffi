@@ -1,4 +1,9 @@
-//! Rust FFI bindings to the [FTDI d3xx drivers](https://www.ftdichip.com/Drivers/d3xx.htm).
+//! Rust FFI bindings to the [FTDI d3xx drivers](https://ftdichip.com/drivers/d3xx-drivers/).
+//! 
+//! See the [Programming Guide](https://ftdichip.com/document/programming-guides/) for more
+//! documentation.
+//! 
+//! [Github Repository](https://github.com/ftdi-rs/libftd3xx-ffi/)
 #![allow(non_upper_case_globals)]
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]

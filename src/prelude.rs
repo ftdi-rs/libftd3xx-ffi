@@ -1,4 +1,17 @@
 pub use crate::{FT_STATUS, _FT_STATUS::*};
+pub use crate::{FT_HANDLE,};
+pub use crate::{
+    FT_LIST_ALL, 
+    FT_LIST_BY_INDEX, 
+    FT_LIST_NUMBER_ONLY
+};
+pub use crate::{
+    FT_OPEN_BY_SERIAL_NUMBER,
+    FT_OPEN_BY_DESCRIPTION,
+    FT_OPEN_BY_LOCATION,
+    FT_OPEN_BY_GUID,
+    FT_OPEN_BY_INDEX
+};
 pub use crate::{
     FT_Create,
     FT_Close,
