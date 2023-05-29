@@ -1,8 +1,8 @@
 //! Rust FFI bindings to the [FTDI d3xx drivers](https://ftdichip.com/drivers/d3xx-drivers/).
-//! 
+//!
 //! See the [Programming Guide](https://ftdichip.com/document/programming-guides/) for more
 //! documentation.
-//! 
+//!
 //! [Github Repository](https://github.com/ftdi-rs/libftd3xx-ffi/)
 #![allow(non_upper_case_globals)]
 #![allow(non_camel_case_types)]
@@ -36,4 +36,3 @@ cfg_if::cfg_if! {
         std::compile_error!("pre-generated bindings are not avaliable for your target");
     }
 }
-

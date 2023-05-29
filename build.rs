@@ -136,8 +136,12 @@ fn linker_options() {
 #[cfg(feature = "static")]
 fn linker_options() {
     match env::var("CARGO_CFG_TARGET_OS").unwrap().as_str() {
-        "windows" => { println!("cargo:rustc-link-lib=static=ftd3xx") }
-        "linux" => { println!("cargo:rustc-link-lib=static=ftd3xx-static") }
+        "windows" => {
+            println!("cargo:rustc-link-lib=static=ftd3xx")
+        }
+        "linux" => {
+            println!("cargo:rustc-link-lib=static=ftd3xx-static")
+        }
         "macos" => {
             println!("cargo:rustc-link-lib=static=ftd3xx");
             println!("cargo:rustc-link-lib=framework=IOKit");
@@ -169,11 +173,9 @@ fn main() {
     {
         let bindings = bindgen::Builder::default()
             .header(header.to_str().unwrap())
-            .default_enum_style(
-                bindgen::EnumVariation::Rust {
-                    non_exhaustive: false,
-                }
-            )
+            .default_enum_style(bindgen::EnumVariation::Rust {
+                non_exhaustive: false,
+            })
             .allowlist_function("FT_.*")
             .allowlist_type("FT_.*")
             .allowlist_type("_FT_.*")

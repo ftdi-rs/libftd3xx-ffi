@@ -51,10 +51,12 @@ mod tests {
     fn test_ft_getdriverversion() {
         let mut version: DWORD = 0;
         let status: FT_STATUS = unsafe { FT_GetDriverVersion(std::ptr::null_mut(), &mut version) };
-        assert_eq!(status, FT_OK as FT_STATUS, "FT_GetDriverVersion() failed with errror code {status}");
+        assert_eq!(
+            status, FT_OK as FT_STATUS,
+            "FT_GetDriverVersion() failed with errror code {status}"
+        );
     }
 
-    
     #[test]
     fn test_ft_listdevices() {
         let mut num_devs: DWORD = 0;
@@ -83,15 +85,15 @@ mod tests {
         let mut handle: FT_HANDLE = FT_INVALID_HANDLE as u32 as *mut std::os::raw::c_void;
         let status: FT_STATUS = unsafe {
             let mut open_type = FT_OPEN_BY_INDEX;
-            FT_Create(0 as *mut std::os::raw::c_void,
+            FT_Create(
+                0 as *mut std::os::raw::c_void,
                 FT_OPEN_BY_INDEX, //&mut open_type as *mut _ as *mut c_void,
-                &mut handle)
+                &mut handle,
+            )
         };
         assert_eq!(status, FT_OK as FT_STATUS);
         // close the device
-        let status: FT_STATUS = unsafe {
-            FT_Close(handle)
-        };
+        let status: FT_STATUS = unsafe { FT_Close(handle) };
         assert_eq!(status, FT_OK as FT_STATUS);
     }
 }
