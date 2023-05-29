@@ -48,9 +48,13 @@ fn search_path() -> PathBuf {
             //path.push("build");
         }
         "macos" => match env::var("CARGO_CFG_TARGET_ARCH").unwrap().as_str() {
-            "x86_64" | "aarch64" => {
+            "x86_64" => {
                 path.push("macos");
-                path.push("build");
+                path.push("x86_64");
+            }
+            "aarch64" => {
+                path.push("macos");
+                path.push("aarch64");
             }
             target_arch => panic!("Target architecture not supported: {target_arch}"),
         },
@@ -88,7 +92,14 @@ fn header_path() -> PathBuf {
             }
         }
         "macos" => match env::var("CARGO_CFG_TARGET_ARCH").unwrap().as_str() {
-            "x86_64" | "aarch64" => path.push("macos"),
+            "x86_64" => {
+                path.push("macos");
+                path.push("x86_64");
+            }
+            "aarch64" => {
+                path.push("macos");
+                path.push("aarch64");
+            }
             target_arch => panic!("Target architecture not supported: {target_arch}"),
         },
         target_os => panic!("Target OS not supported: {target_os}"),
@@ -143,7 +154,7 @@ fn linker_options() {
             println!("cargo:rustc-link-lib=static=ftd3xx-static")
         }
         "macos" => {
-            println!("cargo:rustc-link-lib=static=ftd3xx");
+            println!("cargo:rustc-link-lib=static=ftd3xx-static");
             println!("cargo:rustc-link-lib=framework=IOKit");
             println!("cargo:rustc-link-lib=framework=CoreFoundation");
         }
