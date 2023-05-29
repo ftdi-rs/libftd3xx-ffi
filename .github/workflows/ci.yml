@@ -57,7 +57,6 @@ jobs:
         if: ${{ contains(matrix.target, 'musl') }}
       - name: Build with glibc
         run: |
-          cargo build --target ${{ matrix.target }}
           cargo build --features=bindgen  --target ${{ matrix.target }}
           cargo build --features=static  --target ${{ matrix.target }}
           cargo build --features=static,bindgen  --target ${{ matrix.target }}
