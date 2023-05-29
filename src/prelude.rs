@@ -1,10 +1,14 @@
+#[rustfmt::skip]
 pub use crate::{FT_STATUS, _FT_STATUS::*};
+#[rustfmt::skip]
 pub use crate::{FT_HANDLE,};
+#[rustfmt::skip]
 pub use crate::{
     FT_LIST_ALL, 
     FT_LIST_BY_INDEX, 
     FT_LIST_NUMBER_ONLY
 };
+#[rustfmt::skip]
 pub use crate::{
     FT_OPEN_BY_SERIAL_NUMBER,
     FT_OPEN_BY_DESCRIPTION,
@@ -12,6 +16,7 @@ pub use crate::{
     FT_OPEN_BY_GUID,
     FT_OPEN_BY_INDEX
 };
+#[rustfmt::skip]
 pub use crate::{
     FT_Create,
     FT_Close,
