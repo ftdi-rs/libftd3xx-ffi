@@ -17,7 +17,7 @@ The default feature set will use dynamic linking.
 
 ```toml
 [dependencies]
-libftd3xx-ffi = "~0.0.1"
+libftd3xx-ffi = "~0.0.2"
 ```
 
 ### Bindgen
@@ -28,7 +28,7 @@ The bindings can also be generated during compilation using the [bindgen]
 feature flag.
 ```toml
 [dependencies]
-libftd3xx-ffi = { version = "~0.0.1", features = ["bindgen"] }
+libftd3xx-ffi = { version = "~0.0.2", features = ["bindgen"] }
 ```
 
 Bindgen has additional dependencies that must be installed in order to
@@ -39,7 +39,7 @@ Static linking the FTD3XX library into this crate can be done by using
 the static feature flag.
 ```toml
 [dependencies]
-libftd3xx-ffi = { version = "~0.0.1", features = ["static"] }
+libftd3xx-ffi = { version = "~0.0.2", features = ["static"] }
 ```
 Static linking may be preferred, however there may be license
 incompatibilities (static linking with GPL code).
