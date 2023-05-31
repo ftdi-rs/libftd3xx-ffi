@@ -48,9 +48,13 @@ fn search_path() -> PathBuf {
             //path.push("build");
         }
         "macos" => match env::var("CARGO_CFG_TARGET_ARCH").unwrap().as_str() {
-            "x86_64" | "aarch64" => {
+            "x86_64" => {
                 path.push("macos");
-                path.push("build");
+                path.push("x86_64");
+            }
+            "aarch64" => {
+                path.push("macos");
+                path.push("aarch64");
             }
             target_arch => panic!("Target architecture not supported: {target_arch}"),
         },
@@ -88,7 +92,14 @@ fn header_path() -> PathBuf {
             }
         }
         "macos" => match env::var("CARGO_CFG_TARGET_ARCH").unwrap().as_str() {
-            "x86_64" | "aarch64" => path.push("macos"),
+            "x86_64" => {
+                path.push("macos");
+                path.push("x86_64");
+            }
+            "aarch64" => {
+                path.push("macos");
+                path.push("aarch64");
+            }
             target_arch => panic!("Target architecture not supported: {target_arch}"),
         },
         target_os => panic!("Target OS not supported: {target_os}"),
@@ -136,10 +147,14 @@ fn linker_options() {
 #[cfg(feature = "static")]
 fn linker_options() {
     match env::var("CARGO_CFG_TARGET_OS").unwrap().as_str() {
-        "windows" => { println!("cargo:rustc-link-lib=static=ftd3xx") }
-        "linux" => { println!("cargo:rustc-link-lib=static=ftd3xx-static") }
+        "windows" => {
+            println!("cargo:rustc-link-lib=static=ftd3xx")
+        }
+        "linux" => {
+            println!("cargo:rustc-link-lib=static=ftd3xx-static")
+        }
         "macos" => {
-            println!("cargo:rustc-link-lib=static=ftd3xx");
+            println!("cargo:rustc-link-lib=static=ftd3xx-static");
             println!("cargo:rustc-link-lib=framework=IOKit");
             println!("cargo:rustc-link-lib=framework=CoreFoundation");
         }
@@ -169,11 +184,9 @@ fn main() {
     {
         let bindings = bindgen::Builder::default()
             .header(header.to_str().unwrap())
-            .default_enum_style(
-                bindgen::EnumVariation::Rust {
-                    non_exhaustive: false,
-                }
-            )
+            .default_enum_style(bindgen::EnumVariation::Rust {
+                non_exhaustive: false,
+            })
             .allowlist_function("FT_.*")
             .allowlist_type("FT_.*")
             .allowlist_type("_FT_.*")

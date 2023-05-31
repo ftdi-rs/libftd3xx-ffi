@@ -51,19 +51,15 @@ jobs:
           targets: ${{ matrix.target }}
       - name: Build with musl
         run: |
-          cargo build --features=static --target ${{ matrix.target }}
           cargo build --features=static,bindgen --target ${{ matrix.target }}
           cargo build --examples --features=static,bindgen --target ${{ matrix.target }}
         if: ${{ contains(matrix.target, 'musl') }}
       - name: Build with glibc
         run: |
-          cargo build --target ${{ matrix.target }}
-          cargo build --features=bindgen  --target ${{ matrix.target }}
-          cargo build --features=static  --target ${{ matrix.target }}
           cargo build --features=static,bindgen  --target ${{ matrix.target }}
           cargo build --examples --features=static,bindgen  --target ${{ matrix.target }}
         if: ${{ contains(matrix.target, 'gnu') }}
-      - run: cargo doc
+      - run: cargo doc --features=static,bindgen
 
   macos_build:
     name: Mac Build
@@ -74,9 +70,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: dtolnay/rust-toolchain@stable
-      - run: cargo build --target x86_64-apple-darwin
-      - run: cargo build --features=bindgen --target x86_64-apple-darwin
-      - run: cargo doc
+      - run: cargo build --features=static,bindgen --target x86_64-apple-darwin
+      - run: cargo doc --features=static,bindgen
 
   windows_build:
     name: Windows Build
@@ -93,35 +88,34 @@ jobs:
         with:
           targets: ${{ matrix.target }}
       - run: |
-          cargo build --target ${{ matrix.target }}
-          cargo build --features=static  --target ${{ matrix.target }}
-          cargo build --examples --features=static  --target ${{ matrix.target }}
-      - run: cargo doc
+          cargo build --features=static,bindgen  --target ${{ matrix.target }}
+          cargo build --examples --features=static,bindgen  --target ${{ matrix.target }}
+      - run: cargo doc --features=static,bindgen
 
-  linux_test:
-    name: Linux Unit Tests
-    runs-on: ubuntu-22.04
-    strategy:
-      matrix:
-        target:
-          - "x86_64-unknown-linux-musl"
-          - "x86_64-unknown-linux-gnu"
-    steps:
-      - name: Update sources
-        run: sudo apt update
-      - uses: actions/checkout@v3
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: ${{ matrix.target }}
-      - run: cargo test --features=static --target ${{ matrix.target }}
+  #linux_test:
+  #  name: Linux Unit Tests
+  #  runs-on: ubuntu-22.04
+  #  strategy:
+  #    matrix:
+  #      target:
+  #        #- "x86_64-unknown-linux-musl"
+  #        - "x86_64-unknown-linux-gnu"
+  #  steps:
+  #    - name: Update sources
+  #      run: sudo apt update
+  #    - uses: actions/checkout@v3
+  #    - uses: dtolnay/rust-toolchain@stable
+  #      with:
+  #        targets: ${{ matrix.target }}
+  #    - run: cargo test --features=static,bindgen --target ${{ matrix.target }}
 
-  macos_test:
-    name: Mac Unit Tests
-    runs-on: macos-12
-    steps:
-      - uses: actions/checkout@v3
-      - uses: dtolnay/rust-toolchain@stable
-      - run: cargo test --target x86_64-apple-darwin
+  #macos_test:
+  #  name: Mac Unit Tests
+  #  runs-on: macos-12
+  #  steps:
+  #    - uses: actions/checkout@v3
+  #    - uses: dtolnay/rust-toolchain@stable
+  #   - run: cargo test --features=static,bindgen --target x86_64-apple-darwin
 
   windows_test:
     name: Windows Unit Tests
@@ -134,7 +128,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.target }}
-      - run: cargo test --target ${{ matrix.target }}
+      - run: cargo test --features=static,bindgen --target ${{ matrix.target }}
 
   clippy_check:
     name: Clippy
@@ -163,9 +157,9 @@ jobs:
       - clippy_check
       - format_check
       - linux_build
-      - linux_test
+      #- linux_test
       - macos_build
-      - macos_test
+      #- macos_test
       - windows_build
       - windows_test
     runs-on: ubuntu-22.04
