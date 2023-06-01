@@ -1,3 +1,4 @@
+pub use crate::FT_Status;
 #[rustfmt::skip]
 pub use crate::{FT_STATUS, _FT_STATUS::*};
 #[rustfmt::skip]
